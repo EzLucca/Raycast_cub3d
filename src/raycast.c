@@ -15,14 +15,106 @@ int map[] =
 	1,1,1,1,1,1,1,1
 };
 
-t_player player = {3.0f, 3.0f, 0.0f, 0.0f, 0.0f}; // Initial player position
+t_player player = {4.5f, 5.5f, 0, 0, 0.0f, 0.0f, 0.0f, 10}; // Initial player position
 
 void *image = NULL;
 
 // Convert RGB to 32-bit integer
-int32_t ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a)
+int32_t ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a) // use uint8_t
 {
 	return (r << 24 | g << 16 | b << 8 | a);
+}
+
+void draw_line(mlx_image_t *img, int x0, int y0, int x1, int y1, uint32_t color)
+{
+	int dx = abs(x1 - x0);
+	int dy = abs(y1 - y0);
+
+	int sx = x0 < x1 ? 1 : -1;
+	int sy = y0 < y1 ? 1 : -1;
+
+	int err = dx - dy;
+
+	while (1)
+	{
+		mlx_put_pixel(img, x0, y0, color);
+		if (x0 == x1 && y0 == y1)
+			break;
+		int e2 = 2 * err;
+		if (e2 > -dy) { err -= dy; x0 += sx; }
+		if (e2 <  dx) { err += dx; y0 += sy; }
+	}
+}
+
+void drawray(void)
+{
+	int r, mx, my, mp, dof;
+	float rx, ry, ra, xo, yo;
+	uint32_t dirColor = ft_pixel(GREEN);
+	int center_x = player.xPos + player.Size / 2;
+	int center_y = player.yPos + player.Size / 2;
+
+	ra = player.da;
+	yo = 0;
+
+	// normalize angle
+	while (ra < 0)
+		ra += 2 * M_PI;
+	while (ra > 2 * M_PI)
+		ra -= 2 * M_PI;
+
+	float aTan = -1 / tan(ra);
+	for (r = 0; r < 1; r++)
+	{
+		dof = 0;
+
+		// looking straight left or right
+		if (fabs(ra) < 0.0001 || fabs(ra - M_PI) < 0.0001)
+		{
+			rx = player.xPos;
+			ry = player.yPos;
+			dof = MAX_DOF;
+		}
+		else
+		{
+			// looking up
+			if (ra > M_PI)
+			{
+				ry = (((int)player.yPos / TILE_SIZE) * TILE_SIZE) - 0.0001;
+				rx = (player.yPos - ry) * aTan + player.xPos;
+
+				yo = -TILE_SIZE;
+				xo = -yo * aTan;
+			}
+			// looking down
+			else if (ra < M_PI)
+			{
+				ry = (((int)player.yPos / TILE_SIZE) * TILE_SIZE) + TILE_SIZE;
+				rx = (player.yPos - ry) * aTan + player.xPos;
+
+				yo = TILE_SIZE;
+				xo = -yo * aTan;
+			}
+		}
+		while (dof < MAX_DOF)
+		{
+			mx = (int)(rx) >> 6;
+			my = (int)(ry) >> 6;
+			mp = my * mapX + mx;
+
+			if (mx < 0 || my < 0 || mx >= mapX || my >= mapY)
+				break;
+			if (map[mp] == 1)
+				break;
+			rx += xo;
+			ry += yo;
+
+			dof++;
+		}
+
+		draw_line(image, (int)center_x, (int)center_y, (int)rx, (int)ry, dirColor);
+		// rx and ry need to check if is a wall.
+	}
 }
 
 // Draw the map
@@ -37,7 +129,7 @@ void drawMap2D(void)
 		for (x = 0; x < mapX; ++x)
 		{
 			int tile = map[y * mapX + x];
-			int color = (tile == 1) ? ft_pixel(255, 255, 255, 255) : ft_pixel(0, 0, 0, 255); // Red for walls, Blue for empty
+			int color = (tile == 1) ? ft_pixel(WHITE) : ft_pixel(BLACK); // white for walls and black for other
 
 			// Draw the tile at the correct position (x, y)
 			for (int i = 0; i < tile_size; ++i)
@@ -48,8 +140,8 @@ void drawMap2D(void)
 				}
 			}
 			// Draw the borders (delimitations) for each tile (thin black border around each tile)
-			int border_color = (tile == 1) ? ft_pixel(0, 0, 0, 255) : ft_pixel(255, 255, 255, 255); // Black border
-																									// Top and bottom borders
+			int border_color = (tile == 1) ? ft_pixel(BLACK) : ft_pixel(WHITE); // Black border for wall and white
+																				// Top and bottom borders
 			for (int i = 0; i < tile_size; ++i) 
 			{
 				mlx_put_pixel(image, x * tile_size + i, y * tile_size, border_color); // Top border
@@ -68,34 +160,34 @@ void drawMap2D(void)
 // Draw the player
 void drawPlayer(void)
 {
-	uint32_t playerColor = ft_pixel(255, 0, 0, 255);   // Player color
-	uint32_t dirColor    = ft_pixel(0, 255, 0, 255);   // Direction line color (green)
+	// uint32_t playerColor = ft_pixel(255, 0, 0, 255);   // Player color
+	uint32_t playerColor = ft_pixel(RED);   // Player color
+	uint32_t dirColor    = ft_pixel(RED);   // Direction line color (green)
 
-	int playerSize = 10;
-	int xPos = player.x * TILE_SIZE;
-	int yPos = player.y * TILE_SIZE;
+	player.xPos = player.x * TILE_SIZE;
+	player.yPos = player.y * TILE_SIZE;
 
 	// Draw player square
-	for (int i = 0; i < playerSize; ++i)
+	for (int i = 0; i < player.Size; ++i)
 	{
-		for (int j = 0; j < playerSize; ++j)
+		for (int j = 0; j < player.Size; ++j)
 		{
-			mlx_put_pixel(image, xPos + i, yPos + j, playerColor);
+			mlx_put_pixel(image, player.xPos + i, player.yPos + j, playerColor);
 		}
 	}
 	// --- Direction line ---
-	int center_x = xPos + playerSize / 2;
-	int center_y = yPos + playerSize / 2;
+	int center_x = player.xPos + player.Size / 2;
+	int center_y = player.yPos + player.Size / 2;
 
-	float dx = cos(player.da);
-	float dy = sin(player.da);
+	player.dx = cos(player.da);
+	player.dy = sin(player.da);
 
-	int line_length = 80;
+	int line_length = 50;
 
 	for (int i = 0; i < line_length; ++i)
 	{
-		int lx = center_x + dx * i;
-		int ly = center_y + dy * i;
+		int lx = center_x + player.dx * i;
+		int ly = center_y + player.dy * i;
 		mlx_put_pixel(image, lx, ly, dirColor);
 	}
 }
@@ -110,7 +202,7 @@ void ft_hook(void* param)
 	// Move the player with smaller steps (fluid movement)
 	if (mlx_is_key_down(mlx, MLX_KEY_UP)) 
 	{
-		if (map[(int)(player.y - playerSpeed) * mapX + (int)(player.x)] == 0) // Prevent moving through walls
+		if (map[(int)(player.y - playerSpeed) * mapY + (int)(player.x)] == 0) // Prevent moving through walls
 			player.y -= playerSpeed; // Move up
 	}
 	if (mlx_is_key_down(mlx, MLX_KEY_DOWN)) 
@@ -152,6 +244,7 @@ void update(void* param)
 	ft_hook(param);    // Handle input
 	drawMap2D();       
 	drawPlayer();
+	drawray();
 }
 
 // Main function
