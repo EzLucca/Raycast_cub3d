@@ -17,10 +17,6 @@
 #define WIDTH 1024 
 #define HEIGHT 1024 
 
-// static mlx_image_t* image;
-int32_t ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a);
-
-// -----------------------------------------------------------------------------
 #define mapX  8	//map width
 #define mapY  8	//map height
 #define mapS  64     //map cube size
@@ -43,5 +39,13 @@ typedef struct s_player {
 	float	da;
 	float	Size;
 } t_player;
+
+int32_t ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a);
+void draw_line(mlx_image_t *img, int x0, int y0, int x1, int y1, uint32_t color);
+void drawray(void);
+void drawMap2D(void);
+void drawPlayer(void);
+void ft_hook(void* param);
+void update(void* param);
 
 #endif

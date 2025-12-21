@@ -15,7 +15,7 @@ MLX_REPO	:= https://github.com/codam-coding-college/MLX42.git
 MLX_DIR     := lib/MLX42
 MLX_A       := $(BUILD_DIR)/mlx42/libmlx42.a
 
-SRC      := $(SRC_DIR)/raycast.c \
+SRC      := $(SRC_DIR)/main.c \
 
 
 OBJ      := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
