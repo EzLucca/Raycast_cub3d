@@ -16,6 +16,11 @@ MLX_DIR     := lib/MLX42
 MLX_A       := $(BUILD_DIR)/mlx42/libmlx42.a
 
 SRC      := $(SRC_DIR)/main.c \
+			$(SRC_DIR)/player.c \
+			$(SRC_DIR)/dda_draw.c \
+			$(SRC_DIR)/raycast.c \
+			$(SRC_DIR)/hook.c \
+			$(SRC_DIR)/map.c \
 
 
 OBJ      := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)

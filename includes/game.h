@@ -23,11 +23,11 @@
 #define TILE_SIZE 125   // Size of each tile (in pixels)
 #define MAX_DOF 8 
 
-#define RED 255, 0, 0, 255
-#define GREEN 0, 255, 0, 255
-#define BLUE 0, 0, 255, 255
-#define BLACK 0, 0, 0, 255
-#define WHITE 255, 255, 255, 255
+#define RED		255,   0,   0, 255
+#define GREEN	  0, 255,   0, 255
+#define BLUE	  0,   0, 255, 255
+#define BLACK	  0,   0,   0, 255
+#define WHITE	255, 255, 255, 255
 
 typedef struct s_player {
 	float	x;
@@ -38,13 +38,21 @@ typedef struct s_player {
 	float	dy;
 	float	da;
 	float	Size;
+	float	Speed;
 } t_player;
+
+typedef struct s_game {
+	mlx_t		*mlx;
+	t_player	*player;
+	mlx_image_t	*image;
+	int			*map;
+} t_game;
 
 int32_t ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a);
 void draw_line(mlx_image_t *img, int x0, int y0, int x1, int y1, uint32_t color);
-void drawray(void);
-void drawMap2D(void);
-void drawPlayer(void);
+void drawray(void *param);
+void drawMap2D(void *param);
+void drawPlayer(void *param);
 void ft_hook(void* param);
 void update(void* param);
 

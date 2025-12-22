@@ -1,21 +1,17 @@
 #include "../includes/game.h"
 
-// Define the map
-int map[] =
+// Convert RGB to 32-bit integer
+int32_t ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a) // use uint8_t
 {
-	1,1,1,1,1,1,1,1,
-	1,0,0,1,0,0,0,1,
-	1,0,0,1,0,0,0,1,
-	1,0,0,1,1,0,0,1,
-	1,0,0,0,0,0,0,1,
-	1,0,0,0,0,0,0,1,
-	1,0,0,0,0,0,0,1,
-	1,1,1,1,1,1,1,1
-};
+	return (r << 24 | g << 16 | b << 8 | a);
+}
 
 // Draw the map
-void drawMap2D(void)
+void drawMap2D(void *param)
 {
+	t_game *game;
+
+	game = (t_game *)param;
 	int x, y;
 	int tile_size = TILE_SIZE;
 
@@ -24,7 +20,7 @@ void drawMap2D(void)
 	{
 		for (x = 0; x < mapX; ++x)
 		{
-			int tile = map[y * mapX + x];
+			int tile = game->map[y * mapX + x];
 			int color = (tile == 1) ? ft_pixel(WHITE) : ft_pixel(BLACK); // white for walls and black for other
 
 			// Draw the tile at the correct position (x, y)
@@ -32,7 +28,7 @@ void drawMap2D(void)
 			{
 				for (int j = 0; j < tile_size; ++j)
 				{
-					mlx_put_pixel(image, x * tile_size + i, y * tile_size + j, color);
+					mlx_put_pixel(game->image, x * tile_size + i, y * tile_size + j, color);
 				}
 			}
 			// Draw the borders (delimitations) for each tile (thin black border around each tile)
@@ -40,14 +36,14 @@ void drawMap2D(void)
 																				// Top and bottom borders
 			for (int i = 0; i < tile_size; ++i) 
 			{
-				mlx_put_pixel(image, x * tile_size + i, y * tile_size, border_color); // Top border
-				mlx_put_pixel(image, x * tile_size + i, (y + 1) * tile_size - 1, border_color); // Bottom border
+				mlx_put_pixel(game->image, x * tile_size + i, y * tile_size, border_color); // Top border
+				mlx_put_pixel(game->image, x * tile_size + i, (y + 1) * tile_size - 1, border_color); // Bottom border
 			}
 			// Left and right borders
 			for (int j = 0; j < tile_size; ++j) 
 			{
-				mlx_put_pixel(image, x * tile_size, y * tile_size + j, border_color); // Left border
-				mlx_put_pixel(image, (x + 1) * tile_size - 1, y * tile_size + j, border_color); // Right border
+				mlx_put_pixel(game->image, x * tile_size, y * tile_size + j, border_color); // Left border
+				mlx_put_pixel(game->image, (x + 1) * tile_size - 1, y * tile_size + j, border_color); // Right border
 			}
 		}
 	}

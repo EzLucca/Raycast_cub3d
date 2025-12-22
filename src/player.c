@@ -1,37 +1,40 @@
 #include "../includes/game.h"
 
 // Draw the player
-void drawPlayer(void)
+void drawPlayer(void *param)
 {
+
+	t_game *game;
+
+	game = (t_game *)param;
 	// uint32_t playerColor = ft_pixel(255, 0, 0, 255);   // Player color
 	uint32_t playerColor = ft_pixel(RED);   // Player color
 	uint32_t dirColor    = ft_pixel(RED);   // Direction line color (green)
 
-	player.xPos = player.x * TILE_SIZE;
-	player.yPos = player.y * TILE_SIZE;
+	game->player->xPos = game->player->x * TILE_SIZE;
+	game->player->yPos = game->player->y * TILE_SIZE;
 
 	// Draw player square
-	for (int i = 0; i < player.Size; ++i)
+	for (int i = 0; i < game->player->Size; ++i)
 	{
-		for (int j = 0; j < player.Size; ++j)
+		for (int j = 0; j < game->player->Size; ++j)
 		{
-			mlx_put_pixel(image, player.xPos + i, player.yPos + j, playerColor);
+			mlx_put_pixel(game->image, game->player->xPos + i, game->player->yPos + j, playerColor);
 		}
 	}
 	// --- Direction line ---
-	int center_x = player.xPos + player.Size / 2;
-	int center_y = player.yPos + player.Size / 2;
+	int center_x = game->player->xPos + game->player->Size / 2;
+	int center_y = game->player->yPos + game->player->Size / 2;
 
-	player.dx = cos(player.da);
-	player.dy = sin(player.da);
+	game->player->dx = cos(game->player->da);
+	game->player->dy = sin(game->player->da);
 
 	int line_length = 50;
 
 	for (int i = 0; i < line_length; ++i)
 	{
-		int lx = center_x + player.dx * i;
-		int ly = center_y + player.dy * i;
-		mlx_put_pixel(image, lx, ly, dirColor);
+		int lx = center_x + game->player->dx * i;
+		int ly = center_y + game->player->dy * i;
+		mlx_put_pixel(game->image, lx, ly, dirColor);
 	}
 }
-
