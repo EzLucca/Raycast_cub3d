@@ -4,12 +4,12 @@
 int map[] =
 {
 	1,1,1,1,1,1,1,1,
-	1,0,0,1,0,0,0,1,
+	1,1,0,1,0,0,0,1,
 	1,0,0,1,0,0,0,1,
 	1,0,0,1,1,0,0,1,
 	1,0,0,0,0,0,0,1,
-	1,0,0,0,0,0,0,1,
-	1,0,0,0,0,0,0,1,
+	1,0,1,0,0,0,0,1,
+	1,1,0,0,0,0,1,1,
 	1,1,1,1,1,1,1,1
 };
 
@@ -19,7 +19,7 @@ int32_t main(void)
 	t_game game;
 	ft_memset(&game, 0, sizeof(t_game));
 
-	game.player = &(t_player){4.5f, 5.5f, 0, 0, 0.0f, 0.0f, 0.0f, 10, 0.1f}; // Initial player position
+	game.player = &(t_player){4.5f, 5.5f, 0, 0, 0.0f, 0.0f, 0.0f}; // Initial player position
 	size_t map_size = sizeof(map) / sizeof(map[0]);
 
 	game.map = malloc(sizeof(int) * map_size);
