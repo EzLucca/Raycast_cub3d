@@ -1,5 +1,7 @@
 CC       := cc
-CFLAGS   := -Wall -Wextra -Werror -o3
+CFLAGS 	 := -Wall -Wextra -Werror -O3 -MMD -MP
+GDBFLAGS := -g -O0 -Wall -Wextra -Werror
+
 LDFLAGS  := -ldl -lglfw -lm -lz
 
 NAME     	:= game 
@@ -24,6 +26,7 @@ SRC      := $(SRC_DIR)/main.c \
 
 
 OBJ      := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+DEPS 	 := $(OBJ:.o=.d)
 
 all: $(LIBFT_A) $(MLX_A) $(NAME)
 
@@ -46,8 +49,14 @@ $(NAME): $(LIBFT_A) $(MLX_A) $(OBJ)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
+-include $(DEPS)
 $(OBJ_DIR):
 	@mkdir -p $@
+
+gdb: $(LIBFT_A) $(MLX_A) $(OBJ)
+	@$(CC) $(OBJ) $(LIBFT_A) $(MLX_A) $(GDBFLAGS) $(INCLUDES) $(LDFLAGS) -o $@
+	@clear
+	@echo "✅ Build $(NAME) successfully! 🎉"
 
 clean:
 	rm -rf $(OBJ_DIR) $(BUILD_DIR)/src
@@ -61,6 +70,7 @@ re: fclean all
 
 run: all 
 	./$(NAME)
+
 
 .SECONDARY: $(OBJ)
 .SECONDARY: $(OBJ_BONUS)

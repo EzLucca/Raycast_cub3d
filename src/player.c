@@ -12,14 +12,14 @@ void drawPlayer(void *param)
 	game->player->xPos = game->player->x * TILE_SIZE;
 	game->player->yPos = game->player->y * TILE_SIZE;
 
-	// Draw player square
+	// Draw player square on 2dmap
 	i = 0;
 	while(i < PLAYER_SIZE)
 	{
 		j = 0;
 		while(j < PLAYER_SIZE)
 		{
-			mlx_put_pixel(game->image, game->player->xPos + i, game->player->yPos + j, playerColor);
+			mlx_put_pixel(game->img_map, game->player->xPos + i, game->player->yPos + j, playerColor);
 			++j;
 		}
 		++i;

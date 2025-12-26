@@ -14,18 +14,21 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define WIDTH 1024 
-#define HEIGHT 1024 
+#define WIN_W  1024 
+#define WIN_H  1024 
 
-#define mapX  8	//map width
-#define mapY  8	//map height
-#define mapS  64     //map cube size
-#define TILE_SIZE 125   // Size of each tile (in pixels)
+#define TILE_SIZE   64
+
+#define MAP_W (MAPX * TILE_SIZE)
+#define MAP_H (MAPY * TILE_SIZE)
+#define MAPX  8	//map width
+#define MAPY  8	//map height
+#define TILE_SIZE 64   // Size of each tile (in pixels)
 #define PLAYER_SIZE 10   // Size of player (in pixels)
 #define PLAYER_SPEED 0.1  // Size of player (in pixels)
 #define MAX_DOF 8 
-#define NUM_RAYS   1
-#define FOV        (NUM_RAYS * M_PI / 180.0f)
+#define NUM_RAYS  30
+#define FOV        (M_PI / 3)
 
 #define RED		255,   0,   0, 255
 #define GREEN	  0, 255,   0, 255
@@ -66,6 +69,8 @@ typedef struct s_game {
 	mlx_t		*mlx;
 	t_player	*player;
 	mlx_image_t	*image;
+	mlx_image_t	*img_map;
+	mlx_image_t	*img_3d;
 	int			*map;
 	t_raycast	ray;
 } t_game;
@@ -74,6 +79,7 @@ int32_t ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a);
 void draw_line(mlx_image_t *img, int x0, int y0, int x1, int y1, uint32_t color);
 void drawray(void *param);
 void drawMap2D(void *param);
+void drawMap3D(void *param);
 void drawPlayer(void *param);
 void ft_hook(void* param);
 void update(void* param);

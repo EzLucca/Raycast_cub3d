@@ -36,12 +36,12 @@ void drawray(void *param)
 		game->ray.dist_v = draw_vertical(game);
 
 		if (game->ray.dist_h < game->ray.dist_v)
-			draw_line(game->image,
+			draw_line(game->img_map,
 					game->ray.center_x, game->ray.center_y,
 					game->ray.h_rx, game->ray.h_ry,
 					ft_pixel(RED));
 		else
-			draw_line(game->image,
+			draw_line(game->img_map,
 					game->ray.center_x, game->ray.center_y,
 					game->ray.v_rx, game->ray.v_ry,
 					ft_pixel(RED));
@@ -94,9 +94,9 @@ int	draw_horizontal(t_game *game)
 		else                // looking down
 			game->ray.my = (int)(game->ray.h_ry / TILE_SIZE);
 
-		if (game->ray.mx < 0 || game->ray.my < 0 || game->ray.mx >= mapX || game->ray.my >= mapY)
+		if (game->ray.mx < 0 || game->ray.my < 0 || game->ray.mx >= MAPX || game->ray.my >= MAPY)
 			break;
-		game->ray.mp = game->ray.my * mapX + game->ray.mx;
+		game->ray.mp = game->ray.my * MAPX + game->ray.mx;
 		if (game->map[game->ray.mp] == 1)
 			break;
 		game->ray.h_rx += game->ray.xo;
@@ -166,10 +166,10 @@ int	draw_vertical(t_game *game)
 
 		game->ray.my = (int)(game->ray.v_ry / TILE_SIZE);
 
-		if (game->ray.mx < 0 || game->ray.my < 0 || game->ray.mx >= mapX || game->ray.my >= mapY)
+		if (game->ray.mx < 0 || game->ray.my < 0 || game->ray.mx >= MAPX || game->ray.my >= MAPY)
 			break;
 
-		game->ray.mp = game->ray.my * mapX + game->ray.mx;
+		game->ray.mp = game->ray.my * MAPX + game->ray.mx;
 		if (game->map[game->ray.mp] == 1)
 			break;
 
@@ -180,9 +180,9 @@ int	draw_vertical(t_game *game)
 	// cast width/height to int for safe comparison
 	// printf("end_x: %d game->ray.v_ry: %d\n", end_x, game->ray.v_ry); // DEBUG
 	if (game->ray.v_rx < 0) game->ray.v_rx = 0;
-	if (game->ray.v_rx >= (int)game->image->width) game->ray.v_rx = (int)game->image->width - 1;
+	if (game->ray.v_rx >= (int)game->img_map->width) game->ray.v_rx = (int)game->img_map->width - 1;
 	if (game->ray.v_ry < 0) game->ray.v_ry = 0;
-	if (game->ray.v_ry >= (int)game->image->height) game->ray.v_ry = (int)game->image->height - 1;
+	if (game->ray.v_ry >= (int)game->img_map->height) game->ray.v_ry = (int)game->img_map->height - 1;
 
 	dist_v = dist(
 			game->ray.center_x,

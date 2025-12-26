@@ -29,28 +29,44 @@ int32_t main(void)
 	ft_memcpy(game.map, map, sizeof(map));
 
 	// Initialize MLX
-	if (!(game.mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true))) {
+	if (!(game.mlx = mlx_init(WIN_W, WIN_H, "MLX42", true))) {
 		puts(mlx_strerror(mlx_errno));
 		return EXIT_FAILURE;
 	}
-	// Create an game.image buffer
-	if (!(game.image = mlx_new_image(game.mlx, mapX * TILE_SIZE, mapY * TILE_SIZE))) {
+	mlx_set_window_title(game.mlx, "title");
+	if(!(game.img_map = mlx_new_image(game.mlx, MAP_W, MAP_H)))
+	{
 		mlx_close_window(game.mlx);
 		puts(mlx_strerror(mlx_errno));
 		return EXIT_FAILURE;
 	}
-	// Put the game.image to the window
-	if (mlx_image_to_window(game.mlx, game.image, 0, 0) == -1) {
+	if(!(game.img_3d  = mlx_new_image(game.mlx, WIN_W - MAP_W, WIN_H)))
+	{
 		mlx_close_window(game.mlx);
 		puts(mlx_strerror(mlx_errno));
 		return EXIT_FAILURE;
 	}
+	if(mlx_image_to_window(game.mlx, game.img_map, 0, 0) == -1)
+	{
+		mlx_close_window(game.mlx);
+		puts(mlx_strerror(mlx_errno));
+		return EXIT_FAILURE;
+	}
+	if(mlx_image_to_window(game.mlx, game.img_3d, MAP_W, 0) == -1)
+	{
+		mlx_close_window(game.mlx);
+		puts(mlx_strerror(mlx_errno));
+		return EXIT_FAILURE;
+	}
+
 	// Set up the update loop
 	mlx_loop_hook(game.mlx, update, &game);
 	// Start the MLX event loop
 	mlx_loop(game.mlx);
 	// Cleanup
 	mlx_delete_image(game.mlx, game.image);
+	mlx_delete_image(game.mlx, game.img_map);
+	mlx_delete_image(game.mlx, game.img_3d);
 	mlx_terminate(game.mlx);
 	return EXIT_SUCCESS;
 }
