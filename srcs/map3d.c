@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   map3d.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jgueon <jgueon@student.hive.fi>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/14 16:15:24 by edlucca           #+#    #+#             */
-/*   Updated: 2026/01/15 09:53:42 by edlucca          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "cub3d.h"
 
 /**
@@ -138,17 +126,4 @@ void	draw_map3d(t_game *game)
 		draw_textured_column(game, x, dist);
 		x++;
 	}
-}
-
-void	resize_callback(int new_width, int new_height, void *param)
-{
-	t_game	*game;
-
-	game = param;
-	if (new_width <= 0 || new_height <= 0)
-		return ;
-	game->window_width = new_width;
-	game->window_height = new_height;
-	create_img(game, &game->img_3d, game->window_width, game->window_height);
-	create_img(game, &game->img_map, MINIMAP_SIZE, MINIMAP_SIZE);
 }

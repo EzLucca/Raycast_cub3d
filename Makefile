@@ -25,7 +25,7 @@ SRC      := $(SRC_DIR)/main.c \
 			$(SRC_DIR)/dda.c \
 			$(SRC_DIR)/map3d.c \
 			$(SRC_DIR)/map2d.c \
-			$(SRC_DIR)/minimap_utils.c \
+			$(SRC_DIR)/map2d_utils.c \
 			$(SRC_DIR)/movements.c \
 			$(SRC_DIR)/text.c \
 			$(SRC_DIR)/colors.c \
