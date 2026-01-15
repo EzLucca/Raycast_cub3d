@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bgazur <bgazur@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jgueon <jgueon@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 09:19:38 by edlucca           #+#    #+#             */
-/*   Updated: 2025/09/04 11:24:12 by bgazur           ###   ########.fr       */
+/*   Updated: 2026/01/14 19:58:39 by jgueon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,8 @@ typedef struct s_exec
 	char			**app;
 	bool			in_first;
 	bool			out_passed;
-	int				infile;	
-	int				outfile;	
+	int				infile;
+	int				outfile;
 	int				fd[2];
 	int				saved_stdin;
 	int				saved_stdout;
@@ -94,20 +94,30 @@ typedef struct s_exec
 // Function Prototypes
 //------------------------------------------------------------------------------
 
+// /**
+//  * @brief Exit function for overflow in ft_atoi().
+//  * @param data Data struct of all core variables.
+//  * @return None.
+//  */
+// void	exit_atoi_overflow(t_data *data);
 /**
- * @brief Exit function for overflow in ft_atoi().
- * @param data Data struct of all core variables.
- * @return None.
+ * This function converts the initial portion of the string pointed to by str
+ * to an integer representation. It skips all white-space characters at the
+ * beginning, takes an optional plus or minus sign followed by as many digits
+ * as possible, and interprets them as a numerical value.
+ * ft_atoi - Converts a string to an integer
+ *
+ * @param str: The string to be converted
+ * @return The converted integer value
  */
-void	exit_atoi_overflow(t_data *data);
-
-/**
- * @brief Converts a string into an integer.
- * @param nptr String to convert.
- * @param data Data struct of all core variables.
- * @return Converted string as int.
- */
-int		ft_atoi(const char *nptr, t_data *data);
+int		ft_atoi(const char *str);
+// /**
+//  * @brief Converts a string into an integer.
+//  * @param nptr String to convert.
+//  * @param data Data struct of all core variables.
+//  * @return Converted string as int.
+//  */
+// int		ft_atoi(const char *nptr, t_data *data);
 
 /**
  * @brief Erases data in a memory by writing \0 to that area.
@@ -495,7 +505,7 @@ char	ft_whichifs(int c);
 /* GNL*********************************************************************** */
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10 
+#  define BUFFER_SIZE 100
 # endif
 
 char	*ft_strtrim(char const *s1, char const *set);
