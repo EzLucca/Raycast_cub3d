@@ -6,12 +6,23 @@
 /*   By: edlucca <edlucca@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 16:16:30 by edlucca           #+#    #+#             */
-/*   Updated: 2026/01/14 16:16:31 by edlucca          ###   ########.fr       */
+/*   Updated: 2026/01/15 10:06:19 by edlucca          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
+/**
+ * @brief Determines the step direction for raycasting.
+ *
+ * This function returns the step value along an axis based on the
+ * direction component. If the direction is negative, the step is -1;
+ * otherwise, it is 1.
+ *
+ * @param dir The direction component (x or y) of the ray.
+ *
+ * @return The step value (-1 or 1) for moving along the axis.
+ */
 static int	get_step(double dir)
 {
 	if (dir < 0)
@@ -19,6 +30,19 @@ static int	get_step(double dir)
 	return (1);
 }
 
+/**
+ * @brief Calculates the initial side distance for DDA raycasting.
+ *
+ * This function computes the distance from the player’s current
+ * position to the first grid line along the X or Y axis, depending
+ * on the `is_x` flag. The result is used in the DDA algorithm to
+ * determine which side of the map grid the ray will intersect first.
+ *
+ * @param game Pointer to the game structure containing player and ray info.
+ * @param is_x If true, calculates distance along the X axis; if false, along Y.
+ *
+ * @return The distance to the next side along the specified axis.
+ */
 static double	get_side_dist(t_game *game, bool is_x)
 {
 	double	ret;
@@ -43,6 +67,16 @@ static double	get_side_dist(t_game *game, bool is_x)
 	return (ret);
 }
 
+/**
+ * @brief Initializes the raycasting structure for a single ray.
+ *
+ * This function sets up the ray's starting position, direction, delta
+ * distances, step values, and initial side distances based on the given
+ * ray angle. It prepares the ray structure for use in the DDA algorithm.
+ *
+ * @param ray_angle The angle of the ray relative to the player's view.
+ * @param g         Pointer to the game structure containing player and ray info.
+ */
 static void	init_ray_struct(double ray_angle, t_game *g)
 {
 	g->ray.map_x = (int)g->player.x;
@@ -57,6 +91,19 @@ static void	init_ray_struct(double ray_angle, t_game *g)
 	g->ray.side_dist_y = get_side_dist(g, false);
 }
 
+/**
+ * @brief Executes the DDA algorithm to find a wall hit.
+ *
+ * This function performs the Digital Differential Analyzer (DDA)
+ * loop, stepping through the map grid along the ray until a wall
+ * is encountered. It updates the ray’s map coordinates and side
+ * distances at each step.
+ *
+ * @param game Pointer to the game structure containing the ray and map.
+ *
+ * @return An integer indicating which side was hit: 0 for a vertical wall,
+ *         1 for a horizontal wall.
+ */
 static int	perform_dda(t_game *game)
 {
 	int	hit;
@@ -82,6 +129,19 @@ static int	perform_dda(t_game *game)
 	return (side);
 }
 
+/**
+ * @brief Casts a single ray and calculates the distance to the first wall.
+ *
+ * This function initializes the ray structure, performs the DDA algorithm
+ * to detect the first wall hit, and computes the distance from the player
+ * to that wall. The distance is corrected based on whether a vertical or
+ * horizontal wall was hit.
+ *
+ * @param ray_angle The angle of the ray relative to the player's viewing
+ * direction.
+ * @param game      Pointer to the game structure containing player, map,
+ * and ray info.
+ */
 void	cast_ray(double ray_angle, t_game *game)
 {
 	int		side;

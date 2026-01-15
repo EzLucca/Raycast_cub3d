@@ -6,12 +6,21 @@
 /*   By: edlucca <edlucca@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 16:15:35 by edlucca           #+#    #+#             */
-/*   Updated: 2026/01/14 16:15:36 by edlucca          ###   ########.fr       */
+/*   Updated: 2026/01/15 09:48:13 by edlucca          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
+/**
+ * @brief Handles keyboard input events.
+ *
+ * Pressing the M key toggles the minimap display, while
+ * pressing the TAB key toggles mouse control.
+ *
+ * @param keydata Structure containing key event information.
+ * @param param   Pointer to the game structure.
+ */
 void	key_hook(mlx_key_data_t keydata, void *param)
 {
 	t_game	*game;
@@ -23,6 +32,15 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 		game->mouse = !game->mouse;
 }
 
+/**
+ * @brief Main loop hook handling input and game updates.
+ *
+ * This function is called continuously by the MLX loop. It checks for
+ * exit input and updates the player state by handling movement and
+ * rotation based on current input.
+ *
+ * @param param Pointer to the game structure.
+ */
 void	ft_hook(void *param)
 {
 	t_game	*game;
@@ -37,6 +55,15 @@ void	ft_hook(void *param)
 	horizontal_rotation(game);
 }
 
+/**
+ * @brief Fills an image with a single color.
+ *
+ * This function clears the given MLX image by setting every pixel
+ * to the specified color.
+ *
+ * @param img   Pointer to the MLX image to be cleared.
+ * @param color Color value used to fill the image.
+ */
 void	clear_image(mlx_image_t *img, uint32_t color)
 {
 	int	*p;
@@ -53,6 +80,16 @@ void	clear_image(mlx_image_t *img, uint32_t color)
 	}
 }
 
+/**
+ * @brief Main game rendering loop.
+ *
+ * This function is called each frame by the MLX loop. It clears the
+ * rendering images, draws the background, processes input and player
+ * updates, and renders both the 3D view and the minimap. Mouse handling
+ * is updated if enabled.
+ *
+ * @param param Pointer to the game structure.
+ */
 void	game_loop(void *param)
 {
 	t_game	*game;
@@ -70,6 +107,19 @@ void	game_loop(void *param)
 		init_mouse(game);
 }
 
+/**
+ * @brief Handles mouse movement for player rotation.
+ *
+ * This function updates the player's viewing angle based on horizontal
+ * mouse movement. The angle is adjusted using a sensitivity factor,
+ * normalized within the range [0, 2π], and the player's direction
+ * vector is recalculated accordingly. The mouse cursor is then reset
+ * to the center of the window.
+ *
+ * @param xpos  Current x-coordinate of the mouse cursor.
+ * @param ypos  Current y-coordinate of the mouse cursor (unused).
+ * @param param Pointer to the game structure.
+ */
 void	mouse_hook(double xpos, double ypos, void *param)
 {
 	t_game		*game;

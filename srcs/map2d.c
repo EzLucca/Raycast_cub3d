@@ -6,12 +6,24 @@
 /*   By: jgueon <jgueon@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 16:15:52 by edlucca           #+#    #+#             */
-/*   Updated: 2026/01/14 17:11:36 by jgueon           ###   ########.fr       */
+/*   Updated: 2026/01/15 09:52:20 by edlucca          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
+/**
+ * @brief Prepares minimap coordinates for a single tile.
+ *
+ * This function calculates the scaled screen coordinates of a given
+ * map tile relative to the player's position. It sets the start and
+ * end positions for rendering the tile on the minimap and stores the
+ * tile type.
+ *
+ * @param x    X-coordinate of the tile in the map grid.
+ * @param y    Y-coordinate of the tile in the map grid.
+ * @param game Pointer to the game structure.
+ */
 static void	minimap_prepare_tile(int x, int y, t_game *game)
 {
 	double	cam_x;
@@ -30,6 +42,16 @@ static void	minimap_prepare_tile(int x, int y, t_game *game)
 	game->map2d.end_y = (int)((rel_y + 1) * game->map2d.scale_y + MM_CENTER);
 }
 
+/**
+ * @brief Draws a single tile on the minimap.
+ *
+ * This function renders a map tile onto the minimap image using its
+ * precomputed screen coordinates. Tiles that are completely outside
+ * the minimap boundaries are skipped. The color of the tile is
+ * determined by the `tile_color` function.
+ *
+ * @param game Pointer to the game structure.
+ */
 static void	minimap_draw_tile(t_game *game)
 {
 	int	color;
@@ -57,6 +79,16 @@ static void	minimap_draw_tile(t_game *game)
 	}
 }
 
+/**
+ * @brief Draws the player's field of view rays on the minimap.
+ *
+ * This function casts multiple rays corresponding to the player's
+ * current viewing angle and field of view. Each ray is projected onto
+ * the minimap using scaled coordinates, and a line is drawn from the
+ * minimap center to the ray endpoint. The ray color is set to red.
+ *
+ * @param g Pointer to the game structure.
+ */
 static void	minimap_draw_ray(t_game *g)
 {
 	int		r;
@@ -80,6 +112,16 @@ static void	minimap_draw_ray(t_game *g)
 	}
 }
 
+/**
+ * @brief Renders the entire minimap.
+ *
+ * This function draws the minimap for the current frame. It sets the
+ * scaling factors, renders the background, iterates over all map
+ * tiles to prepare and draw them, draws the player position, projects
+ * the player's field of view rays, and finally draws the minimap border.
+ *
+ * @param param Pointer to the game structure.
+ */
 void	draw_minimap(void *param)
 {
 	t_game	*game;
