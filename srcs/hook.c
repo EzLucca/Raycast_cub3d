@@ -1,5 +1,22 @@
 #include "cub3d.h"
 
+void switch_draw_mode(t_game *game, int mode)
+{
+	game->draw_mode = mode;
+
+	// Free old img_map safely
+	if (game->img_map)
+	{
+		mlx_delete_image(game->mlx, game->img_map);
+		game->img_map = NULL;
+	}
+
+	// Allocate new img_map with correct size
+	if (mode == DRAW_3D)
+		create_img(game, &game->img_map, MINIMAP_SIZE, MINIMAP_SIZE);
+	else // DRAW_2D fullscreen
+		create_img(game, &game->img_map, game->window_width, game->window_height);
+}
 /**
  * @brief Handles keyboard input events.
  *
@@ -14,10 +31,24 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 	t_game	*game;
 
 	game = param;
-	if (keydata.key == MLX_KEY_M && keydata.action == MLX_PRESS)
-		game->show_map = !game->show_map;
+	if (game->draw_mode == DRAW_3D)
+	{
+		if (keydata.key == MLX_KEY_M && keydata.action == MLX_PRESS)
+			game->show_map = !game->show_map;
+	}
 	if (keydata.key == MLX_KEY_TAB && keydata.action == MLX_PRESS)
 		game->mouse = !game->mouse;
+
+	if (keydata.key == MLX_KEY_1 && keydata.action == MLX_PRESS)
+		switch_draw_mode(game, DRAW_3D);
+	else if (keydata.key == MLX_KEY_2 && keydata.action == MLX_PRESS)
+	{
+		switch_draw_mode(game, DRAW_2D);
+		game->show_map = true;
+	}
+
+	if (mlx_is_key_down(game->mlx, MLX_KEY_U))
+		fire_laser(game);
 }
 
 /**
@@ -78,6 +109,7 @@ void	clear_image(mlx_image_t *img, uint32_t color)
  *
  * @param param Pointer to the game structure.
  */
+
 void	game_loop(void *param)
 {
 	t_game	*game;
@@ -89,8 +121,16 @@ void	game_loop(void *param)
 		clear_image(game->img_map, 0x000000FF);
 	render_background(game, game->window_width, game->window_height);
 	ft_hook(game);
-	draw_map3d(game);
-	draw_minimap(game);
+	if (game->draw_mode == DRAW_3D)
+	{
+		draw_map3d(game);
+		minimap_draw_laser(game);
+		draw_map2d(game);
+	}
+	else if (game->draw_mode == DRAW_2D)
+	{
+		draw_map2d(game);
+	}
 	if (game->mouse == true)
 		init_mouse(game);
 }

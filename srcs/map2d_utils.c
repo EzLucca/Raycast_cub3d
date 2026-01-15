@@ -12,14 +12,28 @@ void	draw_minimap_background(t_game *game)
 {
 	int	x;
 	int	y;
+	int	height;
+	int	width;
 	int	color;
 
 	y = 0;
+	height = 0;
+	width = 0;
 	color = set_color(game, BLACK, TRANSPARENT);
-	while (y < MINIMAP_SIZE)
+	if(game->draw_mode == DRAW_3D)
+	{
+		width = MINIMAP_SIZE;
+		height = MINIMAP_SIZE;
+	}
+	else if (game->draw_mode == DRAW_2D)
+	{
+		width = game->window_width;
+		height = game->window_height;
+	}
+	while (y < height)
 	{
 		x = 0;
-		while (x < MINIMAP_SIZE)
+		while (x < width)
 		{
 			mlx_put_pixel(game->img_map, x, y, color);
 			x++;

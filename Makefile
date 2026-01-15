@@ -41,6 +41,7 @@ SRC      := $(SRC_DIR)/main.c \
 			$(SRC_DIR)/utils_color.c \
 			$(SRC_DIR)/utils_map_read.c \
 			$(SRC_DIR)/utils_parse_meta.c \
+			$(SRC_DIR)/lazergun.c \
 
 OBJ      := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 DEPS 	 := $(OBJ:.o=.d)

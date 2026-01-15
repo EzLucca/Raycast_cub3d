@@ -81,8 +81,15 @@ int	init_mlx(t_game *game)
 		return (EXIT_FAILURE);
 	}
 	mlx_set_window_title(game->mlx, "title");
-	create_img(game, &game->img_3d, game->window_width, game->window_height);
-	create_img(game, &game->img_map, MINIMAP_SIZE, MINIMAP_SIZE);
+	if (game->draw_mode == DRAW_3D)
+	{
+		create_img(game, &game->img_3d, game->window_width, game->window_height);
+		create_img(game, &game->img_map, MINIMAP_SIZE, MINIMAP_SIZE);
+	}
+	else if (game->draw_mode == DRAW_2D)
+	{
+		create_img(game, &game->img_map, game->window_width, game->window_height);
+	}
 	return (0);
 }
 
@@ -116,6 +123,7 @@ int	main(int argc, char **argv)
 		return (1);
 	init_player(&game);
 	set_spawn_tile_walkable(game);
+	game.draw_mode = DRAW_3D;
 	if (init_mlx(&game) == 1)
 	{
 		printf("error\n");

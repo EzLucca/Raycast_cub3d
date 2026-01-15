@@ -44,14 +44,41 @@ void	get_player_dir(t_game *game)
  *
  * @param game Pointer to the game structure containing the minimap image.
  */
-void	draw_player(t_game *game)
+void draw_player(t_game *game)
 {
-	int	x;
-	int	y;
+    int cx, cy;             // center of player
+    int x, y;
+    int radius = 3;         // radius of the player circle
+    int img_width = game->img_map->width;
+    int img_height = game->img_map->height;
+	int	color = set_color(game, GREEN, TRANSPARENT);
 
-	x = MM_CENTER;
-	y = MM_CENTER;
-	mlx_put_pixel(game->img_map, x, y, GREEN);
+    if (game->draw_mode == DRAW_3D)
+    {
+        cx = MM_CENTER;
+        cy = MM_CENTER;
+    }
+    else // DRAW_2D fullscreen
+    {
+        cx = img_width * 0.5;
+        cy = img_height * 0.5;
+    }
+
+    for (y = -radius; y <= radius; y++)
+    {
+        for (x = -radius; x <= radius; x++)
+        {
+            if (x*x + y*y <= radius*radius) // inside circle
+            {
+                int px = cx + x;
+                int py = cy + y;
+
+                // Clamp to image bounds
+                if (px >= 0 && px < img_width && py >= 0 && py < img_height)
+                    mlx_put_pixel(game->img_map, px, py, color);
+            }
+        }
+    }
 }
 
 /**

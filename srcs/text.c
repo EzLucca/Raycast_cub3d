@@ -58,7 +58,7 @@ void	load_textures(t_game *game)
 	game->tex.w_wall = mlx_load_png(game->tex.we);
 	game->tex.e_wall = mlx_load_png(game->tex.ea);
 	if (!game->tex.n_wall || !game->tex.s_wall
-		|| !game->tex.w_wall || !game->tex.e_wall)
+			|| !game->tex.w_wall || !game->tex.e_wall)
 	{
 		fprintf(stderr, "Failed to load textures!\n");
 		exit(EXIT_FAILURE);
@@ -100,6 +100,49 @@ mlx_texture_t	*get_wall_texture(t_game *game)
 }
 
 /**
+ * @brief Rebuilds MLX images according to the current draw mode.
+ *
+ * This function recreates the MLX image buffers whenever the rendering
+ * mode changes or the window is resized. It ensures that only the
+ * necessary images exist and that they have the correct dimensions.
+ *
+ * - In DRAW_3D mode:
+ *   - Creates a full-window image for 3D rendering.
+ *   - Creates a fixed-size minimap image.
+ *
+ * - In DRAW_2D mode:
+ *   - Deletes the 3D image if it exists.
+ *   - Creates a fullscreen image for the 2D map.
+ *
+ * This function must be called whenever `draw_mode`, `window_width`,
+ * or `window_height` changes to avoid invalid image access.
+ *
+ * @param game Pointer to the game structure.
+ */
+void rebuild_images(t_game *game)
+{
+    if (game->draw_mode == DRAW_3D)
+    {
+        create_img(game, &game->img_3d,
+                   game->window_width, game->window_height);
+
+        create_img(game, &game->img_map,
+                   MINIMAP_SIZE, MINIMAP_SIZE);
+    }
+    else if (game->draw_mode == DRAW_2D)
+    {
+        if (game->img_3d)
+        {
+            mlx_delete_image(game->mlx, game->img_3d);
+            game->img_3d = NULL;
+        }
+
+        create_img(game, &game->img_map,
+                   game->window_width, game->window_height);
+    }
+}
+
+/**
  * @brief Handles window resize events.
  *
  * This function updates the game’s stored window dimensions and
@@ -110,15 +153,15 @@ mlx_texture_t	*get_wall_texture(t_game *game)
  * @param new_height The new height of the window.
  * @param param      Pointer to the game structure.
  */
-void	resize_callback(int new_width, int new_height, void *param)
+void resize_callback(int new_width, int new_height, void *param)
 {
-	t_game	*game;
+    t_game *game = (t_game *)param;
 
-	game = param;
-	if (new_width <= 0 || new_height <= 0)
-		return ;
-	game->window_width = new_width;
-	game->window_height = new_height;
-	create_img(game, &game->img_3d, game->window_width, game->window_height);
-	create_img(game, &game->img_map, MINIMAP_SIZE, MINIMAP_SIZE);
+    if (new_width <= 0 || new_height <= 0)
+        return;
+
+    game->window_width = new_width;
+    game->window_height = new_height;
+
+    rebuild_images(game);
 }

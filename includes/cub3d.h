@@ -91,6 +91,11 @@ typedef struct s_map2d		t_map2d;
 typedef struct s_color		t_color;
 typedef struct s_textures	t_textures;
 
+typedef enum e_draw_mode {
+	DRAW_3D,
+	DRAW_2D
+} t_draw_mode;
+
 typedef struct s_player
 {
 	float	x;
@@ -171,6 +176,15 @@ typedef struct s_textures
 	uint32_t		wall_bottom;
 }	t_textures;
 
+
+typedef struct s_laser
+{
+	bool active;        // is laser being fired
+	double angle;       // direction in radians
+	double max_dist;    // max tile distance
+	int duration;       // frames left to display
+} t_laser;
+
 typedef struct s_game
 {
 	bool		mouse;
@@ -194,17 +208,19 @@ typedef struct s_game
 	t_player	player;
 	t_raycast	ray;
 	t_textures	tex;
+	t_draw_mode draw_mode; 
+	t_laser laser;
 }	t_game;
 
 void			cast_ray(double ray_angle, t_game *game);
 void			cast_ray(double ray_angle, t_game *game);
 int				create_img(t_game *game, mlx_image_t **image, int width,
-					int height);
+		int height);
 int				get_texture(t_game *game);
 int				set_color(t_game *game, int visible, int invisible);
 int				ft_pixel(t_color color); // use uint8_t
 void			clear_image(mlx_image_t *img, uint32_t color);
-void			draw_minimap(void *param);
+void			draw_map2d(void *param);
 void			draw_map3d(t_game *game);
 void			draw_player(t_game *game);
 void			ft_hook(void	*param);
@@ -214,9 +230,9 @@ void			init_mouse(t_game *game);
 void			key_hook(mlx_key_data_t keydata, void *param);
 void			mouse_hook(double xpos, double ypos, void *param);
 void			render_background(t_game *game, int32_t new_width,
-					int32_t new_height);
+		int32_t new_height);
 void			resize_callback(int32_t new_width, int32_t new_height,
-					void *param);
+		void *param);
 void			move_up(t_game *game);
 void			move_down(t_game *game);
 void			move_left(t_game *game);
@@ -232,6 +248,10 @@ void			draw_minimap_border(t_game *game);
 void			draw_minimap_background(t_game *game);
 int				tile_color(t_game *game);
 
+void draw_line_world( mlx_image_t *img, int x0, int y0, int x1, int y1, uint32_t color);
+void minimap_draw_laser(t_game *g);
+void fire_laser(t_game *game);
+
 // ====== Parsing functions ========== //
 char			*get_line(int fd);
 int				check_args(int argc, char **argv);
@@ -241,7 +261,7 @@ int				handle_color_line(t_game *game, char *trim);
 int				handle_texture_line(t_game *game, char *trim);
 int				is_map_charset(char c);
 int				parse_identifiers_until_map(int fd, t_game *game,
-					char **first_line);
+		char **first_line);
 int				parse_rgb_line(char identifier, char *line, int *rgb);
 int				parse_scene(const char *path, t_game *game);
 int				read_map(int fd, t_game *game, char *first_line);
