@@ -134,6 +134,7 @@ typedef struct s_raycast
 	double	side_dist_y;
 	int		side;
 	double	dist;
+	double	raw_dist;
 }	t_raycast;
 
 typedef struct s_map2d

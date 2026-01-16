@@ -135,18 +135,15 @@ void	cast_ray(double ray_angle, t_game *game)
 	int		side;
 	double	h_ray;
 	double	v_ray;
-	double	p_to_grid_x;
-	double	p_to_grid_y;
 
 	init_ray_struct(ray_angle, game);
 	side = perform_dda(game);
 	game->ray.side = side;
-	p_to_grid_x = game->ray.map_x - game->player.x;
-	p_to_grid_y = game->ray.map_y - game->player.y;
-	v_ray = (p_to_grid_x + (1 - game->ray.step_x) * 0.5) / game->ray.ray_dir_x;
-	h_ray = (p_to_grid_y + (1 - game->ray.step_y) * 0.5) / game->ray.ray_dir_y;
+	v_ray = game->ray.side_dist_x - game->ray.delta_dist_x;
+	h_ray = game->ray.side_dist_y - game->ray.delta_dist_y;
 	if (side == 0)
-		game->ray.dist = v_ray;
+		game->ray.raw_dist = v_ray;
 	else
-		game->ray.dist = h_ray;
+		game->ray.raw_dist = h_ray;
+	game->ray.dist = game->ray.raw_dist;
 }
