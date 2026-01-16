@@ -86,8 +86,6 @@ static void	draw_textured_column(t_game *game, int x, double dist)
 		if (y >= 0 && y < (int)game->img_3d->height)
 		{
 			tex_y = ((y - game->tex.wall_top) * tex->height) / wall_h;
-			if (tex_y < 0)
-				tex_y = 0;
 			if (tex_y >= tex->height)
 				tex_y = tex->height - 1;
 			mlx_put_pixel(game->img_3d, x, y,
